@@ -55,6 +55,7 @@
 
 - (void)processOpenUrl:(NSURL*)url pageLoaded:(BOOL)pageLoaded
 {
+    NSLog(@"Using processOpenUrl");
     __weak __typeof(self) weakSelf = self;
 
     dispatch_block_t handleOpenUrl = ^(void) {
@@ -65,20 +66,26 @@
     };
 
     if (!pageLoaded) {
+        NSLog(@"Using processOpenUrl !pageLoaded");
         NSString* jsString = @"document.readystate";
         [self.webViewEngine evaluateJavaScript:jsString
                              completionHandler:^(id object, NSError* error) {
             if ((error == nil) && [object isKindOfClass:[NSString class]]) {
                 NSString* readyState = (NSString*)object;
-                BOOL ready = [readyState isEqualToString:@"loaded"] || [readyState isEqualToString:@"complete"];
+                BOOL ready = [readyState isEqualToString:@"loaded"] || [readyState isEqualToString:@"complete"] || [readyState isEqualToString:@"interactive"];
                 if (ready) {
+                    NSLog(@"Using processOpenUrl !pageLoaded ready");
+
                     handleOpenUrl();
                 } else {
+                    NSLog(@"Using processOpenUrl !pageLoaded notReady");
+
                     self.url = url;
                 }
             }
         }];
     } else {
+        NSLog(@"Using processOpenUrl pageLoaded");
         handleOpenUrl();
     }
 }
