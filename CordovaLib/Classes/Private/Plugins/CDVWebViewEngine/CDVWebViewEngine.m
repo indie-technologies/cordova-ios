@@ -595,10 +595,7 @@ static void * KVOContext = &KVOContext;
             CDVPlugin* plugin = [vc.pluginObjects objectForKey:pluginName];
             SEL selector = NSSelectorFromString(@"onDisallowedRequest:");
             if ([plugin respondsToSelector:selector]) {
-                shouldAllowRequest = (((BOOL (*)(id, SEL, id, int))objc_msgSend)(plugin, selector, navigationAction));
-                if (!shouldAllowRequest) {
-                    break;
-                }
+                (((void (*)(id, SEL, id, int))objc_msgSend)(plugin, selector, navigationAction));
             }
         }
 
