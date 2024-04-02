@@ -570,6 +570,36 @@ static void * KVOContext = &KVOContext;
     NSURL* url = [navigationAction.request URL];
     CDVViewController* vc = (CDVViewController*)self.viewController;
 
+    NSString *navigationType;
+    switch (navigationAction.navigationType) {
+        case WKNavigationTypeLinkActivated:
+            navigationType = @"LinkActivated";
+            break;
+        case WKNavigationTypeFormSubmitted:
+            navigationType = @"FormSubmitted";
+            break;
+        case WKNavigationTypeBackForward:
+            navigationType = @"BackForward";
+            break;
+        case WKNavigationTypeReload:
+            navigationType = @"Reload";
+            break;
+        case WKNavigationTypeFormResubmitted:
+            navigationType = @"FormResubmitted";
+            break;
+        case WKNavigationTypeOther:
+            navigationType = @"Other";
+            break;
+        default:
+            navigationType = @"Unknown";
+            break;
+    }
+
+    NSString *sourceFrameInfo = navigationAction.sourceFrame.isMainFrame ? @"Main Frame" : @"Sub Frame";
+    NSString *targetFrameInfo = navigationAction.targetFrame.isMainFrame ? @"Main Frame" : @"Sub Frame";
+    
+    NSLog(@"Navigation Action: Request URL = %@, Type = %@, Source Frame = %@, Target Frame = %@, WebView URL = %@", url.absoluteString, navigationType, sourceFrameInfo, targetFrameInfo, webView.URL.absoluteString);
+
     /*
      * Give plugins the chance to handle the url
      */
@@ -591,14 +621,6 @@ static void * KVOContext = &KVOContext;
     }
 
     if (anyPluginsResponded) {
-        for (NSString* pluginName in vc.pluginObjects) {
-            CDVPlugin* plugin = [vc.pluginObjects objectForKey:pluginName];
-            SEL selector = NSSelectorFromString(@"onDisallowedRequest:");
-            if ([plugin respondsToSelector:selector]) {
-                (((void (*)(id, SEL, id, int))objc_msgSend)(plugin, selector, navigationAction));
-            }
-        }
-
         return decisionHandler(shouldAllowRequest);
     }
 
