@@ -570,6 +570,44 @@ static void * KVOContext = &KVOContext;
     NSURL* url = [navigationAction.request URL];
     CDVViewController* vc = (CDVViewController*)self.viewController;
 
+    NSString *navigationType;
+    switch (navigationAction.navigationType) {
+        case WKNavigationTypeLinkActivated:
+            navigationType = @"LinkActivated";
+            break;
+        case WKNavigationTypeFormSubmitted:
+            navigationType = @"FormSubmitted";
+            break;
+        case WKNavigationTypeBackForward:
+            navigationType = @"BackForward";
+            break;
+        case WKNavigationTypeReload:
+            navigationType = @"Reload";
+            break;
+        case WKNavigationTypeFormResubmitted:
+            navigationType = @"FormResubmitted";
+            break;
+        case WKNavigationTypeOther:
+            navigationType = @"Other";
+            break;
+        default:
+            navigationType = @"Unknown";
+            break;
+    }
+
+    NSString *sourceFrameInfo = navigationAction.sourceFrame.isMainFrame ? @"Main Frame" : @"Sub Frame";
+    NSString *targetFrameInfo = navigationAction.targetFrame.isMainFrame ? @"Main Frame" : @"Sub Frame";
+    
+    NSString *sourceFrameUrl = navigationAction.sourceFrame.request.URL.absoluteString;
+    NSString *targetFrameUrl = navigationAction.targetFrame.request.URL.absoluteString;
+    
+    NSString *sourceFrameSecurityOrigin = navigationAction.sourceFrame.securityOrigin.host;
+    NSString *targetFrameSecurityOrigin = navigationAction.targetFrame.securityOrigin.host;
+    
+    NSLog(@"Navigation Action: Request URL = %@, Type = %@, Source Frame = %@, Source Frame URL = %@, Source Frame SecurityOrigin = %@, Target Frame URL = %@, Target Frame = %@, Target Frame SecurityOrigin = %@, WebView URL = %@", url.absoluteString, navigationType, sourceFrameInfo, sourceFrameUrl, sourceFrameSecurityOrigin, targetFrameInfo, targetFrameUrl, targetFrameSecurityOrigin, webView.URL.absoluteString);
+
+
+
     /*
      * Give plugins the chance to handle the url
      */
