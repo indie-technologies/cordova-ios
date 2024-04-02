@@ -598,7 +598,15 @@ static void * KVOContext = &KVOContext;
     NSString *sourceFrameInfo = navigationAction.sourceFrame.isMainFrame ? @"Main Frame" : @"Sub Frame";
     NSString *targetFrameInfo = navigationAction.targetFrame.isMainFrame ? @"Main Frame" : @"Sub Frame";
     
-    NSLog(@"Navigation Action: Request URL = %@, Type = %@, Source Frame = %@, Target Frame = %@, WebView URL = %@", url.absoluteString, navigationType, sourceFrameInfo, targetFrameInfo, webView.URL.absoluteString);
+    NSString *sourceFrameUrl = navigationAction.sourceFrame.request.URL.absoluteString;
+    NSString *targetFrameUrl = navigationAction.targetFrame.request.URL.absoluteString;
+    
+    NSString *sourceFrameSecurityOrigin = navigationAction.sourceFrame.securityOrigin.host;
+    NSString *targetFrameSecurityOrigin = navigationAction.targetFrame.securityOrigin.host;
+    
+    NSLog(@"Navigation Action: Request URL = %@, Type = %@, Source Frame = %@, Source Frame URL = %@, Source Frame SecurityOrigin = %@, Target Frame URL = %@, Target Frame = %@, Target Frame SecurityOrigin = %@, WebView URL = %@", url.absoluteString, navigationType, sourceFrameInfo, sourceFrameUrl, sourceFrameSecurityOrigin, targetFrameInfo, targetFrameUrl, targetFrameSecurityOrigin, webView.URL.absoluteString);
+
+
 
     /*
      * Give plugins the chance to handle the url
