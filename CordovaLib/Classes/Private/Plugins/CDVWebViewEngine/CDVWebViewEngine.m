@@ -570,6 +570,11 @@ static void * KVOContext = &KVOContext;
     NSURL* url = [navigationAction.request URL];
     CDVViewController* vc = (CDVViewController*)self.viewController;
 
+    // Allow iFrame loads from sources not explicitly in our CSP
+    if (!navigationAction.targetFrame.isMainFrame) {
+        return decisionHandler(YES);
+    }
+
     /*
      * Give plugins the chance to handle the url
      */
